@@ -31,6 +31,11 @@ ARCH_CFLAGS := -D__LIMBO__ -D__ANDROID__ -DANDROID -D__linux__ -DCONFIG_LINUX $(
   $(USE_PLATFORM21_FLAGS) $(USE_PLATFORM26_FLAGS)
 ARCH_LD_FLAGS=
 
+# QEMU 10.0.3 specific flags
+ifeq ($(USE_QEMU_VERSION), 10.0.3)
+    ARCH_CFLAGS += -DQEMU_VERSION_10_0_3
+endif
+
 ifeq ($(BUILD_HOST), arm64-v8a)
 ######### Armv8 64 bit (Newest ARM phones only, Supports VNC, Needs android-21)
 include $(LIMBO_JNI_ROOT)/android-config/android-device-config/android-armv8.mak

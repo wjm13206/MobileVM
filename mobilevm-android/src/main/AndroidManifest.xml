@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.limbo.emu.main"
+    android:installLocation="auto"
+    android:versionCode="10003"
+    android:versionName="10.0.3" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.software.live_wallpaper"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/limbo"
+        android:label="MobileVM ARM"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.limbo.emu.main.LimboEmuActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|locale"
+            android:exported="true"
+            android:label="MobileVM ARM"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name="com.max2idea.android.limbo.main.AndroidDisplay"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="MobileVM"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
+        
+        <activity
+            android:name="com.max2idea.android.limbo.main.LimboActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true"
+            android:label="MobileVM"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
+    </application>
+
+</manifest>

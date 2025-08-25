@@ -29,7 +29,6 @@ DEL_LIBSDIR=rm -rf $(NDK_PROJECT_PATH)/libs/* \
 	$(LIMBO_APP_PPC)/jniLibs/* \
 	$(LIMBO_APP_SPARC)/jniLibs/*
 
-
 INSTALL_GLIB_LIBS=cp -f glib/glib/.libs/*.so \
     $(NDK_PROJECT_PATH)/obj/local/$(APP_ABI)/
 
@@ -52,7 +51,7 @@ SYNC_LIBS=rsync -av --exclude libqemu-system-* ../libs/* ../jniLibs/
 
 LIMBO_PRJ_ROOT=../../../..
 LIMBO_APP_X86=$(LIMBO_PRJ_ROOT)/limbo-android-x86/src/main
-LIMBO_APP_ARM=$(LIMBO_PRJ_ROOT)/limbo-android-arm/src/main
+LIMBO_APP_ARM=$(LIMBO_PRJ_ROOT)/mobilevm-android/src/main
 LIMBO_APP_PPC=$(LIMBO_PRJ_ROOT)/limbo-android-ppc/src/main
 LIMBO_APP_SPARC=$(LIMBO_PRJ_ROOT)/limbo-android-sparc/src/main
 
@@ -91,17 +90,17 @@ COPY_RESOLV_CONF=mkdir -p ../assets/roms/etc/ && printf "nameserver 8.8.8.8\n\n"
 
 COPY_ASSETS_X86=mkdir -p ../../../../limbo-android-x86/src/main/assets/ && \
     cp -rf ../assets/* ../../../../limbo-android-x86/src/main/assets/
-COPY_ASSETS_ARM=mkdir -p ../../../../limbo-android-arm/src/main/assets/ && \
-    cp -rf ../assets/* ../../../../limbo-android-arm/src/main/assets/
+COPY_ASSETS_ARM=mkdir -p ../../../../mobilevm-android/src/main/assets/ && \
+    cp -rf ../assets/* ../../../../mobilevm-android/src/main/assets/
 COPY_ASSETS_PPC=mkdir -p ../../../../limbo-android-ppc/src/main/assets/ && \
     cp -rf ../assets/* ../../../../limbo-android-ppc/src/main/assets/
 COPY_ASSETS_SPARC=mkdir -p ../../../../limbo-android-sparc/src/main/assets/ && \
     cp -rf ../assets/* ../../../../limbo-android-sparc/src/main/assets/
 
 #RENAME_TUNCTL=mv -f $(NDK_PROJECT_PATH)/libs/$(APP_ABI)/tunctl \
-	$(NDK_PROJECT_PATH)/libs/$(APP_ABI)/libtunctl.so
+#	$(NDK_PROJECT_PATH)/libs/$(APP_ABI)/libtunctl.so
 #RENAME_PARPROUTED=mv -f $(NDK_PROJECT_PATH)/libs/$(APP_ABI)/parprouted \
-	$(NDK_PROJECT_PATH)/libs/$(APP_ABI)/libparprouted.so
+#	$(NDK_PROJECT_PATH)/libs/$(APP_ABI)/libparprouted.so
 	
 #GDB needs the gdb.setup under ./libs
 COPY_GDB_SETUP_LIBS=-cp -f $(NDK_PROJECT_PATH)/libs/$(APP_ABI)/gdb.setup \
@@ -130,7 +129,7 @@ endif
 
 export
 
-.PHONY: limbo clean distclean clean-ndk createdirs clean-ffi clean-glib clean-qemu clean-pixman
+.PHONY: limbo clean distclean clean-ndk createdirs clean-ffi clean-glib clean-qemu clean-pixman prepare-qemu
 
 default: limbo
 	
@@ -138,6 +137,13 @@ createdirs:
 	$(CREATE_OBJDIR)
 	$(DEL_LIBSDIR)
 	$(CREATE_LIBSDIR)
+
+prepare-qemu:
+	@if [ ! -d "qemu" ]; then \
+		echo "QEMU source not found. Please download and extract QEMU 10.0.3 to the 'qemu' directory."; \
+		exit 1; \
+	fi
+	@echo "QEMU source is ready."
 
 ndk:
 	$(ndkbuild)
@@ -198,7 +204,6 @@ clean-glib:
 	-cd $(LIMBO_JNI_ROOT)/glib && $(MAKE) distclean
 	-cd $(LIMBO_JNI_ROOT)/glib && $(MAKE) clean
 	-rm -rf $(LIMBO_JNI_ROOT)/glib/android.cache
-
 
 config-pixman: ndk
 	cd $(LIMBO_JNI_ROOT)/pixman && ./configure --host=$(GNU_HOST) --with-sysroot=$(SYSROOT) \
@@ -282,7 +287,7 @@ install:
 	$(SYNC_LIBS_SPARC)
 	$(COPY_ASSETS_SPARC)
 
-limbo:
+limbo: prepare-qemu
 	make ndk
 	make config-deps
 	make deps
@@ -324,3 +329,4 @@ help:
 	@echo "  eabi (device): armeabi-v7a, arm64-v8a, x86, x86_64"
 	@echo "  optional: export NDK_DEBUG=1 for debuggable binaries"
 	@echo " example: export BUILD_GUEST=x86_64-softmmu && export BUILD_HOST=armeabi-v7a && make limbo"
+	@echo " QEMU versions supported: 2.9.1, 5.1.0, 10.0.3"

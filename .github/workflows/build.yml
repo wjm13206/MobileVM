@@ -1,0 +1,51 @@
+name: Build MobileVM
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y make autoconf automake git python binutils libtool-bin pkg-config flex bison gettext texinfo rsync libpixman-1-dev wget tar xz-utils
+
+    - name: Download and extract QEMU 10.0.3 source
+      run: |
+        cd limbo-android-lib/src/main/jni
+        wget https://download.qemu.org/qemu-10.0.3.tar.xz
+        tar -xf qemu-10.0.3.tar.xz
+        mv qemu-10.0.3 qemu
+
+    - name: Apply QEMU patches
+      run: |
+        cd limbo-android-lib/src/main/jni
+        patch -p1 -d qemu < patches/qemu-10.0.3.patch
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle
+      run: ./gradlew assembleRelease
+
+    - name: Upload APKs
+      uses: actions/upload-artifact@v3
+      with:
+        name: mobilevm-apks
+        path: |
+          mobilevm-android/build/outputs/apk/**/*.apk
