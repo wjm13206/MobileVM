@@ -23,7 +23,8 @@ jobs:
     - name: Install build dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y make autoconf automake git python binutils libtool-bin pkg-config flex bison gettext texinfo rsync libpixman-1-dev wget tar xz-utils
+        sudo apt-get install -y make autoconf automake git python3 python3-pip binutils libtool-bin pkg-config flex bison gettext texinfo rsync libpixman-1-dev wget tar xz-utils
+        sudo apt-get install -y python-is-python3 || sudo ln -s /usr/bin/python3 /usr/bin/python
 
     - name: Download and extract QEMU 10.0.3 source
       run: |
