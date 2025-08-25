@@ -36,7 +36,13 @@ index xxxxxxx..xxxxxxx 100755
 --- a/configure
 +++ b/configure
 @@ -2504,7 +2504,8 @@ if test -z "$cross_prefix" && check_define __ANDROID__; then
+     cross_prefix=${host_alias}-
+ fi
  # pkg-config probe
++elif check_define __LIMBO__; then cross_prefix="aarch64-linux-android-"
+ 
+ # We can only build with glib-2.34.0 or later, as it's the first version to
+ # include glib-compile-schemas and glib-compile-resources, which we need to
 diff --git a/include/qemu/osdep.h b/include/qemu/osdep.h
 index xxxxxxx..xxxxxxx 100644
 --- a/include/qemu/osdep.h
