@@ -2,7 +2,7 @@ diff --git a/accel/kvm/kvm-all.c b/accel/kvm/kvm-all.c
 index xxxxxxx..xxxxxxx 100644
 --- a/accel/kvm/kvm-all.c
 +++ b/accel/kvm/kvm-all.c
-@@ -2015,7 +2015,12 @@ int kvm_init(MachineState *ms)
+@@ -2018,7 +2018,12 @@ int kvm_init(MachineState *ms)
      s->vmfd = -1;
      s->fd = qemu_open("/dev/kvm", O_RDWR);
      if (s->fd == -1) {
@@ -19,7 +19,7 @@ diff --git a/audio/audio.c b/audio/audio.c
 index xxxxxxx..xxxxxxx 100644
 --- a/audio/audio.c
 +++ b/audio/audio.c
-@@ -2005,7 +2005,11 @@ static void audio_init_per_direction_opts(
+@@ -2075,7 +2075,11 @@ static void audio_init_per_direction_opts(
  
      if (!pdo->has_frequency) {
          pdo->has_frequency = true;
@@ -31,26 +31,11 @@ index xxxxxxx..xxxxxxx 100644
      }
      if (!pdo->has_channels) {
          pdo->has_channels = true;
-diff --git a/audio/audio_legacy.c b/audio/audio_legacy.c
-index xxxxxxx..xxxxxxx 100644
---- a/audio/audio_legacy.c
-+++ b/audio/audio_legacy.c
-@@ -105,7 +105,11 @@ static uint32_t frames_to_usecs(uint32_t frames,
-                                 AudiodevPerDirectionOptions *pdo)
- {
-+#ifdef __LIMBO__
-+    uint32_t freq = pdo->has_frequency ? pdo->frequency : 22050;
-+#else
-     uint32_t freq = pdo->has_frequency ? pdo->frequency : 44100;
-+#endif
-     return (frames * 1000000 + freq / 2) / freq;
- }
- 
 diff --git a/configure b/configure
 index xxxxxxx..xxxxxxx 100755
 --- a/configure
 +++ b/configure
-@@ -2501,7 +2501,8 @@ if test -z "$cross_prefix" && check_define __ANDROID__; then
+@@ -2504,7 +2504,8 @@ if test -z "$cross_prefix" && check_define __ANDROID__; then
  # pkg-config probe
 diff --git a/include/qemu/osdep.h b/include/qemu/osdep.h
 index xxxxxxx..xxxxxxx 100644
@@ -71,7 +56,7 @@ diff --git a/migration/rdma.c b/migration/rdma.c
 index xxxxxxx..xxxxxxx 100644
 --- a/migration/rdma.c
 +++ b/migration/rdma.c
-@@ -30,6 +30,10 @@
+@@ -33,6 +33,10 @@
   * Author: Michael R. Hines <mrhines@us.ibm.com>
   */
  
